@@ -32,7 +32,7 @@ public class Dash {
 	private Classe classe;
 	private Enseigant enseigant;
 	private Matiere matiere;
-	private connect con;
+//	private connect con;
 	
 	public String date() {
 		
@@ -46,18 +46,18 @@ public class Dash {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Dash window = new Dash();
-					window.frmEmploieDuTps.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					Dash window = new Dash();
+//					window.frmEmploieDuTps.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	
 	/**
@@ -78,9 +78,10 @@ public class Dash {
 		}
 
 		frmEmploieDuTps = new JFrame();
-		frmEmploieDuTps.setIconImage(Toolkit.getDefaultToolkit().getImage(Dash.class.getResource("/view/image/ico_mat.png")));
+		frmEmploieDuTps.setIconImage(Toolkit.getDefaultToolkit().getImage(Dash.class.getResource("/image/liste.jpg")));
 		frmEmploieDuTps.getContentPane().setBackground(new Color(194, 235, 216));
-		
+		frmEmploieDuTps.getContentPane().setLayout(null);
+				
 		JPanel Title = new JPanel();
 		Title.setBounds(134, 58, 411, 44);
 		Title.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 4, true), "", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(0, 116, 136)));
@@ -99,6 +100,7 @@ public class Dash {
 		panelBtn.setBounds(10, 58, 90, 325);
 		panelBtn.setBackground(SystemColor.inactiveCaption);
 		panelBtn.setLayout(null);
+		frmEmploieDuTps.getContentPane().add(panelBtn);
 		
 		JButton Ens = new JButton("Prof...");
 		Ens.setBounds(10, 54, 70, 23);
@@ -110,7 +112,8 @@ public class Dash {
 				enseigant.frame.setVisible(true);
 				
 			}
-		});
+		}); 
+		
 		panelBtn.add(Ens);
 		
 		JButton matierebtn = new JButton("Matiére");
@@ -124,6 +127,7 @@ public class Dash {
 				
 			}
 		});
+		
 		panelBtn.add(matierebtn);
 		
 		JButton classetbn = new JButton("Classe");
@@ -138,6 +142,7 @@ public class Dash {
 				
 			}
 		});
+		
 		panelBtn.add(classetbn);
 		
 		JButton cour = new JButton("Cours");
@@ -145,9 +150,13 @@ public class Dash {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				Cours cours = new Cours();
+				cours.frame.setVisible(true);
 				
 			}
 		});
+		cour.setBounds(10, 159, 70, 23);
+		panelBtn.add(cour);
 		
 		JButton An = new JButton("Année");
 		An.setBounds(10, 281, 70, 23);
@@ -164,10 +173,9 @@ public class Dash {
 		panelBtn.add(An);
 		
 		
-		frmEmploieDuTps.getContentPane().setLayout(null);
-		cour.setBounds(10, 159, 70, 23);
-		panelBtn.add(cour);
-		frmEmploieDuTps.getContentPane().add(panelBtn);
+		
+		
+		
 		
 		JLabel lblNewLabel = new JLabel("Elements");
 		lblNewLabel.setAlignmentY(Component.BOTTOM_ALIGNMENT);
@@ -202,7 +210,7 @@ public class Dash {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						Date heure = new Date();
-						SimpleDateFormat s = new SimpleDateFormat("HH:mm");
+						SimpleDateFormat s = new SimpleDateFormat("HH:mm:ss");
 						String timeString = s.format(heure);
 						hours.setText(timeString);
 					}
@@ -226,6 +234,8 @@ public class Dash {
 		frmEmploieDuTps.setTitle("Emploie du tps");
 		frmEmploieDuTps.setBackground(Color.BLACK);
 		frmEmploieDuTps.setBounds(100, 100, 643, 472);
+		frmEmploieDuTps.setLocationRelativeTo(null);
 		frmEmploieDuTps.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 	}
 }

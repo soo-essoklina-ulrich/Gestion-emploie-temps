@@ -40,10 +40,13 @@ public class connect {
 	         System.out.println("Erreur lors de la connexion à la base de données : " + e.getMessage());
 	     }
 		return con;
+		
 	 }
 
 
-	 
+	 public void close() throws SQLException {
+		this.con.close();
+	}
 	
 	 
 	 

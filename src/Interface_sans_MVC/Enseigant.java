@@ -60,6 +60,7 @@ public class Enseigant {
 		frame.setBounds(100, 100, 587, 411);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(new BorderLayout(0, 0));
+		frame.setLocationRelativeTo(null);
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.LEFT);
 		frame.getContentPane().add(tabbedPane);

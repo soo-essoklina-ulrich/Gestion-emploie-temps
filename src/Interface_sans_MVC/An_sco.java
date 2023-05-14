@@ -7,7 +7,6 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -17,13 +16,15 @@ import javax.swing.SwingConstants;
 
 import com.toedter.calendar.JDateChooser;
 
+import java.text.SimpleDateFormat;
+
 public class An_sco {
 
 	JFrame frame;
 	private JTextField codeField;
 	private JDateChooser date_d_Field;
 	private JDateChooser date_f_Field;
-
+	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	
 	connect connect;
 
@@ -103,16 +104,19 @@ public class An_sco {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
+		        String date_d = dateFormat.format(date_d_Field.getDate());
+		        String date_f = dateFormat.format(date_d_Field.getDate());
 				try {
 					connect = new connect();
 					//connect.conect();
 					connect.pst = connect.conect().prepareStatement("insert into AnneesScolaires(code, dateDebut, dateFin) values (?,?,?)");
 					connect.pst.setString(1, codeField.getText());
-					connect.pst.setString(2, date_d_Field.getDateFormatString());
-					connect.pst.setString(3, date_f_Field.getDateFormatString());
+					connect.pst.setString(2, date_d);
+					connect.pst.setString(3, date_f);
 					connect.pst.executeUpdate();
 					connect.con.close();
-					JOptionPane.showMessageDialog(null, "la matiére intitulé: "+codeField.getText()+" Ajouter \n"+"date debut : "+date_d_Field.getDateFormatString());
+					JOptionPane.showMessageDialog(null, "la matiére intitulé: "+codeField.getText()+" Ajouter !");
 					
 				} catch (Exception e2) {
 					e2.printStackTrace();
