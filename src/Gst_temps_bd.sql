@@ -58,3 +58,10 @@ CREATE TABLE EmploisDuTemps (
   FOREIGN KEY (idEnseignant) REFERENCES Enseignants(id),
   FOREIGN KEY (idCours) REFERENCES Cours(id)
 );
+
+-- Table user
+CREATE TABLE user(
+userman VARCHAR(20),
+pass VARCHAR(100)
+);
+INSERT INTO gst_temps_bd.user (userman, pass) VALUES ('ulrich', '123');

@@ -1,31 +1,29 @@
 package Interface_sans_MVC;
 
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
 import java.awt.Color;
-import javax.swing.SwingConstants;
-import javax.swing.Timer;
-import javax.swing.JTextField;
-import javax.swing.DropMode;
-import javax.swing.JPasswordField;
-import javax.swing.JButton;
+import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.TextField;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.awt.event.ActionEvent;
-import com.jgoodies.forms.factories.DefaultComponentFactory;
 
+import javax.swing.DropMode;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.Timer;
+
+import com.jgoodies.forms.factories.DefaultComponentFactory;
 
 public class loginface {
 
-	private JFrame frame;
+	public static JFrame frame;
 	public static String user;
 	public static String  password;
 
@@ -57,9 +55,12 @@ public class loginface {
 	 */
 	private void initialize() {
 		frame = new JFrame();
+		frame.setResizable(false);
+		frame.setLocationRelativeTo(null);
 		frame.getContentPane().setBackground(new Color(84, 162, 184));
 		frame.setBounds(100, 100, 450, 300);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE
+				);
 		frame.getContentPane().setLayout(null);
 		
 		JLabel userlbl = new JLabel("USER");
@@ -125,18 +126,56 @@ public class loginface {
 	private  static void log() throws SQLException {
 		connect connect = new connect();
 		connect.conect();
-		String query = "SELECT * FROM user";
+		String query = "SELECT * FROM user WHERE userman LIKE ?";
 		connect.pst = connect.con.prepareStatement(query);
+		connect.pst.setString(1, user);
 		connect.rs = connect.pst.executeQuery();
-		while (connect.rs.next()) {
-			if (connect.rs.getString("userman").equals(user) && connect.rs.getString("pass").equals(password)) {
-				Dash dash = new Dash();
-				dash.frmEmploieDuTps.setVisible(true);
+//		while (connect.rs.next()) {
+//			if (connect.rs.getString("userman").equals(user) && connect.rs.getString("pass").equals(password)) {
+//				
+//				Dash dash = new Dash();
+//				dash.frmEmploieDuTps.setVisible(true);
+//			}else {
+//				JOptionPane.showMessageDialog(null, "user or password wrong\n RETRY");
+//			}
+//		}
+//		
+		
+		if (connect.rs.next()) {
+            // Des résultats ont été trouvés, faire quelque chose avec les résultats
+			if (connect.rs.getString("userman").equals(user)) {
+				
+				if (connect.rs.getString("pass").equals(password)) {
+					JOptionPane.showMessageDialog(null, "welcome "+user+" !");
+					try {
+						frame.dispose();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					Dash dash = new Dash();
+					dash.frmEmploieDuTps.setVisible(true);
+				}else {
+					
+					JOptionPane.showMessageDialog(null, "user or password wrong\n RETRY","Login", 0, null);
+				}
 			}else {
-				JOptionPane.showMessageDialog(null, "user or password wrong\n RETRY");
+				JOptionPane.showMessageDialog(null, "user or password wrong\n RETRY","Login", 0, null);
 			}
-		}
-		
-		
+           
+        } else {
+            // Aucun résultat trouvé, afficher un message à l'utilisateur
+           JOptionPane.showMessageDialog(null, "vous n'ete pas enregistrer","Login", 0, null);
+        }
+   
+
+
+
+
+
+
+
+
 	}
 }
