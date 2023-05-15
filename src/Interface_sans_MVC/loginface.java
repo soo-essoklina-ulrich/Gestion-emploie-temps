@@ -169,7 +169,7 @@ public class loginface {
            JOptionPane.showMessageDialog(null, "vous n'ete pas enregistrer","Login", 0, null);
         }
    
-
+		connect.con.close();
 
 
 
