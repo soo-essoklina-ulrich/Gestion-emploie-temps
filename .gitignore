@@ -1,6 +1,6 @@
 /.settings*
 # Ignorer les fichiers et sous-dossiers du dossier "lib"
-lib/*
+bin/*
 
 # Ne pas ignorer le dossier "lib"
-!lib/
+!bin/
