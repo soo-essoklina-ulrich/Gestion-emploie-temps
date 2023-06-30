@@ -26,7 +26,7 @@ public class An_sco {
 	private JDateChooser date_f_Field;
 	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	
-	connect connect;
+	connect connect = new connect();
 
 	/**
 	 * Launch the application.
@@ -108,8 +108,8 @@ public class An_sco {
 		        String date_d = dateFormat.format(date_d_Field.getDate());
 		        String date_f = dateFormat.format(date_d_Field.getDate());
 				try {
-					connect = new connect();
-					//connect.conect();
+					
+					connect.insert_AnneesScolaires(codeField.getText(), date_d, date_f);
 					connect.pst = connect.conect().prepareStatement("insert into AnneesScolaires(code, dateDebut, dateFin) values (?,?,?)");
 					connect.pst.setString(1, codeField.getText());
 					connect.pst.setString(2, date_d);

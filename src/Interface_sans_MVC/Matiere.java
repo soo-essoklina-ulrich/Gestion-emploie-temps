@@ -8,6 +8,7 @@ import java.awt.Label;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -16,11 +17,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableModel;
 
 public class Matiere {
 
 	JFrame frame;
 	private JTable table;
+	private DefaultTableModel model;
 	connect connect;
 
 	/**
@@ -70,6 +73,28 @@ public class Matiere {
 		
 		table = new JTable();
 		scrollPane.setViewportView(table);
+		model =new DefaultTableModel(
+				new Object[][] {
+				},
+				new String[] {
+					"Id", "Intitule", "Code"
+				}
+			);
+			try {
+				connect.Matieres();
+				while (connect.rs.next()) {
+		             int id = connect.rs.getInt("id");
+		             String intitule = connect.rs.getString("intitule");
+		             String code = connect.rs.getString("code");
+		             
+		             Object[] row = {id, intitule, code };
+		             model.addRow(row);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			table.setModel(model);
+			model.fireTableDataChanged();
 		
 		JPanel plus = new JPanel();
 		plus.setBackground(new Color(245, 245, 245));
@@ -97,15 +122,11 @@ public class Matiere {
 		Button btn_new = new Button("Enregistrer");
 		btn_new.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				String it = intitule_mat.getText();
+				String code = code_mat.getText();
 				try {
-					connect = new connect();
-					//connect.conect();
-					connect.pst = connect.conect().prepareStatement("insert into classes(intitule, code) values (?,?)");
-					connect.pst.setString(1, intitule_mat.getText());
-					connect.pst.setString(2, code_mat.getText());
-					connect.pst.executeUpdate();
-					connect.con.close();
+					connect.insert_Matiere(it, code);
+					connect.close();
 					JOptionPane.showMessageDialog(null, "la matiére intitulé: "+intitule_mat+" Ajouter");
 					
 				} catch (Exception e2) {

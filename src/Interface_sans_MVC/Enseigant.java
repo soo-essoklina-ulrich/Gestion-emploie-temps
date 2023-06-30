@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 
+import javax.management.loading.PrivateClassLoader;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -14,9 +15,17 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.RepaintManager;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
+import javax.swing.event.AncestorListener;
+
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.swing.table.DefaultTableModel;
 
 public class Enseigant {
 
@@ -27,7 +36,8 @@ public class Enseigant {
 	private JTextField telField;
 	private JTextField matriculeField;
 	private JTextField emailField;
-	private connect connect;
+	private DefaultTableModel model;
+	private connect connect = new connect();
 
 	/**
 	 * Launch the application.
@@ -57,6 +67,7 @@ public class Enseigant {
 	 */
 	private void initialize() {
 		frame = new JFrame();
+		frame.setResizable(false);
 		frame.setBounds(100, 100, 587, 411);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(new BorderLayout(0, 0));
@@ -71,12 +82,42 @@ public class Enseigant {
 		liste.setLayout(null);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setViewportBorder(new LineBorder(new Color(0, 0, 0), 3, true));
 		scrollPane.setBounds(0, 0, 528, 367);
 		liste.add(scrollPane);
 		
 		table = new JTable();
+		model =	new DefaultTableModel(
+			new Object[][] {},
+			new String[] {
+				"Id", "Nom", "Pr\u00E9nom", "T\u00E9l\u00E9phone", "Matricule", "E-mail"
+			}	
+		);
+		
+		try {
+			connect.Enseignant();
+			while (connect.rs.next()) {
+	             int id = connect.rs.getInt("id");
+	             String nom = connect.rs.getString("nom");
+	             String prenom = connect.rs.getString("prenom");
+	             String telephone = connect.rs.getString("telephone");
+	             String email = connect.rs.getString("email");
+	             String matricule = connect.rs.getString("matricule");
+
+	             Object[] row = {id, nom, prenom, telephone, email, matricule};
+	             model.addRow(row);
+	         }
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		model.fireTableDataChanged();
+		table.setModel(model);
+		table.getColumnModel().getColumn(0).setPreferredWidth(46);
+		table.getColumnModel().getColumn(2).setPreferredWidth(111);
+		table.getColumnModel().getColumn(3).setPreferredWidth(94);
+		table.getColumnModel().getColumn(5).setPreferredWidth(200);
 		scrollPane.setViewportView(table);
+		
+		
 		
 		JPanel plus = new JPanel();
 		plus.setBackground(new Color(245, 245, 245));
@@ -93,21 +134,29 @@ public class Enseigant {
 			        String email = emailField.getText();
 			        //connexion_bd
 			        try {
-						connect = new connect();
-						//connect.conect();
-						connect.pst = connect.conect().prepareStatement("insert into enseignants(nom, prenom, telephone, matricule, email) values (?,?,?,?,?)");
-						connect.pst.setString(1, nom);
-						connect.pst.setString(2, prenom);
-						connect.pst.setString(3, tel);
-						connect.pst.setString(4, matricule);
-						connect.pst.setString(5, email);
-						connect.pst.executeUpdate();
-						connect.con.close();
+						connect.insert_Enseigant(nom, prenom, tel, matricule, email);
 						JOptionPane.showMessageDialog(null, nom+" Ajouter");
-						
-					} catch (Exception e2) {
-						// TODO: handle exception
-					}
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+						JOptionPane.showMessageDialog(null, "Erreur");
+;					}
+//			        try {
+//						
+//						
+//						connect.pst = connect.conect().prepareStatement("insert into enseignants(nom, prenom, telephone, matricule, email) values (?,?,?,?,?)");
+//						connect.pst.setString(1, nom);
+//						connect.pst.setString(2, prenom);
+//						connect.pst.setString(3, tel);
+//						connect.pst.setString(4, matricule);
+//						connect.pst.setString(5, email);
+//						connect.pst.executeUpdate();
+//						connect.con.close();
+//						JOptionPane.showMessageDialog(null, nom+" Ajouter");
+//						
+//					} catch (Exception e2) {
+//						// TODO: handle exception
+//					}
 
 			        // Faire quelque chose avec les informations renseignées
 			        
@@ -169,7 +218,10 @@ public class Enseigant {
 		emailField.setBounds(226, 193, 106, 30);
 		plus.add(emailField);
 		emailField.setColumns(10);
+	
 	}
+	
+	
 	
 }
 

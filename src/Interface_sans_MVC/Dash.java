@@ -8,6 +8,7 @@ import java.awt.SystemColor;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JButton;
@@ -21,6 +22,7 @@ import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
 
 
 
@@ -32,7 +34,9 @@ public class Dash {
 	private Classe classe;
 	private Enseigant enseigant;
 	private Matiere matiere;
-//	private connect con;
+	private Emploie emploie;
+	private DefaultTableModel model;
+	private connect connect;
 	
 	public String date() {
 		
@@ -62,15 +66,17 @@ public class Dash {
 	
 	/**
 	 * Create the application. 
+	 * @throws SQLException 
 	 */
-	public Dash() {
+	public Dash() throws SQLException {
 		initialize();
 	}
 
 	/**
 	 * Initialize the contents of the frame.
+	 * @throws SQLException 
 	 */
-	private void initialize() {
+	private void initialize() throws SQLException {
 		try {
 		    UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 		} catch (Exception e) {
@@ -78,6 +84,7 @@ public class Dash {
 		}
 
 		frmEmploieDuTps = new JFrame();
+		frmEmploieDuTps.setResizable(false);
 		frmEmploieDuTps.setIconImage(Toolkit.getDefaultToolkit().getImage(Dash.class.getResource("/image/liste.jpg")));
 		frmEmploieDuTps.getContentPane().setBackground(new Color(194, 235, 216));
 		frmEmploieDuTps.getContentPane().setLayout(null);
@@ -97,7 +104,7 @@ public class Dash {
 		Title.add(title_lbl);
 		
 		JPanel panelBtn = new JPanel();
-		panelBtn.setBounds(10, 58, 90, 325);
+		panelBtn.setBounds(10, 58, 90, 364);
 		panelBtn.setBackground(SystemColor.inactiveCaption);
 		panelBtn.setLayout(null);
 		frmEmploieDuTps.getContentPane().add(panelBtn);
@@ -185,6 +192,16 @@ public class Dash {
 		lblNewLabel.setBounds(10, 11, 70, 23);
 		panelBtn.add(lblNewLabel);
 		
+		JButton search = new JButton("Search");
+		search.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				emploie = new Emploie();
+				emploie.frame.setVisible(true);
+			}
+		});
+		search.setBounds(10, 330, 70, 23);
+		panelBtn.add(search);
+		
 		
 		frmEmploieDuTps.getContentPane().add(Title);
 		
@@ -196,7 +213,13 @@ public class Dash {
 		table.setVerifyInputWhenFocusTarget(false);
 		table.setBorder(new LineBorder(new Color(0, 0, 0), 3, true));
 		scrollPane.setViewportView(table);
-		
+		model =	new DefaultTableModel(
+				new Object[][] {},
+				new String[] {
+					 "Enseigant", "Matiere", "Heure"
+				}	
+			);
+		table.setModel(model);
 		JPanel top_bar = new JPanel();
 		top_bar.setBounds(10, 0, 607, 35);
 		frmEmploieDuTps.getContentPane().add(top_bar);

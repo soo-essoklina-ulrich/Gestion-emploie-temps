@@ -8,6 +8,7 @@ import java.awt.Label;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -16,14 +17,16 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableModel;
 
 public class Classe {
 
 	JFrame frame;
+	private DefaultTableModel model;
 	private JTable table;
 	private String it;
 	private String code;
-	connect connect;
+	connect connect = new connect();
 
 	/**
 	 * Launch the application.
@@ -53,6 +56,7 @@ public class Classe {
 	 */
 	private void initialize() {
 		frame = new JFrame();
+		frame.setResizable(false);
 		frame.setBounds(100, 100, 493, 297);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(new BorderLayout(0, 0));
@@ -72,7 +76,29 @@ public class Classe {
 		
 		table = new JTable();
 		scrollPane.setViewportView(table);
-		
+			
+		model =new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Id", "Intitule", "Code"
+			}
+		);
+		try {
+			connect.Classes();
+			while (connect.rs.next()) {
+	             int id = connect.rs.getInt("id");
+	             String intitule = connect.rs.getString("intitule");
+	             String code = connect.rs.getString("code");
+	             
+	             Object[] row = {id, intitule, code };
+	             model.addRow(row);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		table.setModel(model);
+		model.fireTableDataChanged();
 		JPanel plus = new JPanel();
 		plus.setBackground(new Color(245, 245, 245));
 		tabbedPane.addTab("Plus", null, plus, null);
@@ -102,13 +128,7 @@ public class Classe {
 				it = intitule_classe.getText();
 				code = code_classe.getText();
 				try {
-					connect = new connect();
-					//connect.conect();
-					connect.pst = connect.conect().prepareStatement("insert into classes(intitule, code) values (?,?)");
-					connect.pst.setString(1, it);
-					connect.pst.setString(2, code);
-					connect.pst.executeUpdate();
-					connect.con.close();
+					connect.insert_Classe(it, code);
 					JOptionPane.showMessageDialog(null, "la classe intitulé: "+it+" Ajouter");
 					
 				} catch (Exception e2) {

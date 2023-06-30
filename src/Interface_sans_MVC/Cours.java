@@ -1,6 +1,8 @@
 package Interface_sans_MVC;
 
 import java.awt.Color;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -8,10 +10,13 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Cours {
 
 	public JFrame frame;
+	private connect connect = new connect();
 
 	/**
 	 * Launch the application.
@@ -41,9 +46,10 @@ public class Cours {
 	 */
 	private void initialize() {
 		frame = new JFrame();
+		frame.setResizable(false);
 		frame.getContentPane().setBackground(new Color(84, 162, 184));
-		frame.setBounds(100, 100, 522, 346);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setBounds(100, 100, 379, 323);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
 		JLabel Matierelbl = new JLabel("Matiere");
@@ -63,28 +69,68 @@ public class Cours {
 		Annelbl.setBounds(38, 157, 56, 18);
 		frame.getContentPane().add(Annelbl);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setBounds(184, 25, 81, 22);
-		frame.getContentPane().add(comboBox);
+		JComboBox Ma_Box = new JComboBox();
+		Ma_Box.setBounds(184, 25, 145, 22);
+		frame.getContentPane().add(Ma_Box);
 		
-		JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setBounds(184, 63, 81, 22);
-		frame.getContentPane().add(comboBox_1);
+		JComboBox En_Box = new JComboBox();
+		En_Box.setBounds(184, 63, 145, 22);
+		frame.getContentPane().add(En_Box);
 		
-		JComboBox comboBox_2 = new JComboBox();
-		comboBox_2.setBounds(184, 106, 81, 22);
-		frame.getContentPane().add(comboBox_2);
+		JComboBox Cl_Box = new JComboBox();
+		Cl_Box.setBounds(184, 106, 145, 22);
+		frame.getContentPane().add(Cl_Box);
 		
-		JComboBox comboBox_3 = new JComboBox();
-		comboBox_3.setBounds(184, 153, 81, 22);
-		frame.getContentPane().add(comboBox_3);
+		JComboBox An_Box = new JComboBox();
+		An_Box.setBounds(184, 153, 145, 22);
+		frame.getContentPane().add(An_Box);
 		
-		JPanel panel_image = new JPanel();
-		panel_image.setBounds(300, 11, 196, 285);
-		frame.getContentPane().add(panel_image);
+		try {
+			addItem(En_Box, Ma_Box, Cl_Box, An_Box);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		JButton Plus = new JButton("Submit");
+		Plus.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String En = (String) En_Box.getSelectedItem();
+		        String Ma = (String) Ma_Box.getSelectedItem();
+		        String cl = (String) Cl_Box.getSelectedItem();
+		        String An = (String) An_Box.getSelectedItem();
+		        try {
+					connect.insert_Cours2(Ma, En, cl, An);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
 		Plus.setBounds(76, 240, 89, 23);
 		frame.getContentPane().add(Plus);
+	}
+	
+	private void addItem(JComboBox boxEn,JComboBox boxMa,JComboBox boxCl,JComboBox boxAn) throws SQLException {
+		connect.One_Enseigant();
+
+		while (connect.rs.next()) {
+			boxEn.addItem(connect.rs.getString("nom"));
+			
+		}
+		connect.ONE_Matieres();
+		while (connect.rs.next()) {
+			boxMa.addItem(connect.rs.getString("intitule"));
+			
+		}
+		connect.ONE_Classes();
+		while (connect.rs.next()) {
+			boxCl.addItem(connect.rs.getString("intitule"));
+			
+		}
+		connect.ONE_AnneesScolaires();
+		while (connect.rs.next()) {
+			boxAn.addItem(connect.rs.getObject("code"));
+		}
 	}
 }
